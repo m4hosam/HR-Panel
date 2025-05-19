@@ -40,21 +40,20 @@ export async function getEmployees({
     const where = search
       ? {
           OR: [
-            { user: { name: { contains: search, mode: "insensitive" } } },
-            { position: { contains: search, mode: "insensitive" } },
-            { department: { contains: search, mode: "insensitive" } },
+            { user: { name: { contains: search } } },
+            { position: { contains: search } },
+            { department: { contains: search } },
           ],
         }
       : {};
     const employeesAll = await prisma.employee.findMany({});
-    console.log("employeesAll", employeesAll);
-    const employees = await prisma.employee.findMany({
+    console.log("employeesAll", employeesAll);    const employees = await prisma.employee.findMany({
       where,
       skip,
       take: limit,
-      // orderBy: {
-      //   [sortBy === "name" ? "user.name" : sortBy]: sortDirection,
-      // },
+      orderBy: sortBy === "name" 
+        ? { user: { name: sortDirection } } 
+        : { [sortBy]: sortDirection },
       include: {
         user: {
           select: {

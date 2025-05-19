@@ -352,7 +352,7 @@ export function TaskForm({ task, projects, defaultProjectId, userRole }: TaskFor
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">Unassigned</SelectItem>
+                        <SelectItem value="Unassigned">Unassigned</SelectItem>
                         {employees.map((employee) => (
                           <SelectItem key={employee.id} value={employee.id}>
                             <div className="flex items-center gap-2">

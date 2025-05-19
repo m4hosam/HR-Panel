@@ -45,7 +45,7 @@ export default async function TaskDetailPage({
   }
 
   return (
-    <div className="container py-6">
+    <div className="container p-6">
       <TaskDetail 
         task={task} 
         userRole={session.user.role} 

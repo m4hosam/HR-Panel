@@ -55,18 +55,11 @@ export default async function TasksPage({
     sortBy,
     sortDirection: sortDirection as "asc" | "desc",
   });
-  // Check if user has permission to create tasks
-  const canCreateTask = hasPermission(session.user.role, "tasks", "create");
-
+  
   return (
-    <div className="container space-y-6 py-6">
+    <div className="container space-y-6 p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Tasks</h1>
-        {canCreateTask && (
-          <Button asChild>
-            <a href="/dashboard/tasks/new">Add New Task</a>
-          </Button>
-        )}
       </div>
       <Tabs defaultValue={view} className="w-full">
         <div className="flex justify-between items-center mb-4">

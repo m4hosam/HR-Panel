@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -56,6 +56,8 @@ interface EmployeeListProps {
   canCreate: boolean;
 }
 
+import { searchEmployees } from '@/lib/actions/search-employees';
+
 export function EmployeeList({
   initialEmployees,
   pagination,
@@ -63,30 +65,95 @@ export function EmployeeList({
 }: EmployeeListProps) {
   const router = useRouter();
   const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
+  const [currentPagination, setCurrentPagination] = useState(pagination);
   const [page, setPage] = useState(pagination.page);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Update URL without causing a full page reload
+  const updateURL = (params: Record<string, string>) => {
+    const url = new URL(window.location.href);
+    Object.entries(params).forEach(([key, value]) => {
+      url.searchParams.set(key, value);
+    });
+    
+    // Use replaceState to update URL without page reload
+    window.history.replaceState({}, '', url);
+  };
+  
+  // Fetch employees from server
+  const fetchEmployees = async ({
+    newPage = page,
+    newSearch = search,
+    newSortBy = sortBy,
+    newSortDirection = sortDirection
+  }) => {
+    try {
+      setIsLoading(true);
+      
+      const result = await searchEmployees({
+        page: newPage,
+        search: newSearch,
+        sortBy: newSortBy,
+        sortDirection: newSortDirection
+      });
+      
+      if (result.error) {
+        console.error(result.error);
+        return;
+      }
+      
+      setEmployees(result.employees ?? []);
+      setCurrentPagination(result.pagination ?? {
+        total: 0,
+        pages: 1,
+        page: 1,
+        limit: 10
+      });
+
+      
+      
+      // Update URL parameters without page reload
+      updateURL({
+        page: newPage.toString(),
+        search: newSearch,
+        sortBy: newSortBy,
+        sortDirection: newSortDirection
+      });
+      
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   // Handle search form submission
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Implement search logic - ideally would call an API endpoint with search params
-    router.push(`/dashboard/employees?search=${search}&page=1&sortBy=${sortBy}&sortDirection=${sortDirection}`);
+    setPage(1); // Reset to first page on new search
+    await fetchEmployees({ newPage: 1, newSearch: search });
+  };
+  
+  // Handle input change for real-time searching
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
   };
   
   // Handle page change
-  const handlePageChange = (newPage: number) => {
+  const handlePageChange = async (newPage: number) => {
     setPage(newPage);
-    router.push(`/dashboard/employees?page=${newPage}&search=${search}&sortBy=${sortBy}&sortDirection=${sortDirection}`);
+    await fetchEmployees({ newPage });
   };
   
   // Handle sort change
-  const handleSortChange = (column: string) => {
+  const handleSortChange = async (column: string) => {
     const newDirection = sortBy === column && sortDirection === 'asc' ? 'desc' : 'asc';
     setSortBy(column);
     setSortDirection(newDirection);
-    router.push(`/dashboard/employees?page=${page}&search=${search}&sortBy=${column}&sortDirection=${newDirection}`);
+    await fetchEmployees({ newSortBy: column, newSortDirection: newDirection });
   };
   
   // Get initials for avatar fallback
@@ -111,17 +178,31 @@ export function EmployeeList({
           </Button>
         )}
       </div>
-      
-      <form onSubmit={handleSearch} className="flex space-x-2">
-        <Input
-          placeholder="Search employees..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="max-w-sm"
-        />
+        <form onSubmit={handleSearch} className="flex space-x-2">
+        <div className="relative max-w-sm">
+          <Input
+            placeholder="Search employees..."
+            value={search}
+            onChange={(e) => {
+              handleSearchInputChange(e);
+              // Auto-search after typing stops (debounce)
+              clearTimeout((window as any).searchTimeout);
+              (window as any).searchTimeout = setTimeout(() => {
+                fetchEmployees({ newPage: 1, newSearch: e.target.value });
+              }, 500);
+            }}
+            className="pr-8"
+          />
+          {isLoading && (
+            <Loader2 className="h-4 w-4 animate-spin absolute right-3 top-1/2 transform -translate-y-1/2" />
+          )}
+        </div>
         <Select
           value={sortBy}
-          onValueChange={(value) => setSortBy(value)}
+          onValueChange={(value) => {
+            setSortBy(value);
+            fetchEmployees({ newSortBy: value });
+          }}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Sort by" />
@@ -132,10 +213,12 @@ export function EmployeeList({
             <SelectItem value="department">Department</SelectItem>
             <SelectItem value="joinDate">Join Date</SelectItem>
           </SelectContent>
-        </Select>
-        <Select
+        </Select>        <Select
           value={sortDirection}
-          onValueChange={(value) => setSortDirection(value as 'asc' | 'desc')}
+          onValueChange={(value) => {
+            setSortDirection(value as 'asc' | 'desc');
+            fetchEmployees({ newSortDirection: value as 'asc' | 'desc' });
+          }}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Sort direction" />
@@ -198,8 +281,7 @@ export function EmployeeList({
           </TableBody>
         </Table>
       </div>
-      
-      {pagination.pages > 1 && (
+        {currentPagination.pages > 1 && (
         <Pagination>
           <PaginationContent>
             <PaginationItem>
@@ -212,8 +294,8 @@ export function EmployeeList({
               />
             </PaginationItem>
             
-            {Array.from({ length: pagination.pages }, (_, i) => i + 1)
-              .filter((p) => Math.abs(p - page) < 2 || p === 1 || p === pagination.pages)
+            {Array.from({ length: currentPagination.pages }, (_, i) => i + 1)
+              .filter((p) => Math.abs(p - page) < 2 || p === 1 || p === currentPagination.pages)
               .map((p, i, arr) => {
                 // Add ellipsis if needed
                 if (i > 0 && arr[i - 1] !== p - 1) {
@@ -239,13 +321,12 @@ export function EmployeeList({
                   </PaginationItem>
                 );
               })}
-            
-            <PaginationItem>
+              <PaginationItem>
               <PaginationNext
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (page < pagination.pages) handlePageChange(page + 1);
+                  if (page < currentPagination.pages) handlePageChange(page + 1);
                 }}
               />
             </PaginationItem>

@@ -18,7 +18,9 @@ export default function RootLayout({
       <body>
         <Providers>
           <Navigation />
-          <main>{children}</main>
+          <main>
+            {children}
+          </main>
         </Providers>
       </body>
     </html>

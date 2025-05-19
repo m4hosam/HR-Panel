@@ -14,7 +14,7 @@ interface SidebarNavItemProps {
   title: string;
 }
 
-function SidebarNavItem({ href, icon, title }: SidebarNavItemProps) {
+export function SidebarNavItem({ href, icon, title }: SidebarNavItemProps) {
   const pathname = usePathname();
   const isActive = pathname === href;
 
@@ -48,12 +48,14 @@ export function DashboardSidebar() {
               href="/dashboard/employees"
               icon={<Users className="h-4 w-4" />}
               title="Employees"
-            />            <SidebarNavItem
+            />
+
+            <SidebarNavItem
               href="/dashboard/projects"
               icon={<Folders className="h-4 w-4" />}
               title="Projects"
             />
-            
+
             <SidebarNavItem
               href="/dashboard/tasks"
               icon={<CheckSquare className="h-4 w-4" />}
