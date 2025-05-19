@@ -17,10 +17,12 @@ model User {
   emailVerified DateTime?
   password      String?
   image         String?
+  role          Role      @default(USER)
   accounts      Account[]
   sessions      Session[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  employee      Employee?
 }
 
 model Account {
@@ -56,4 +58,117 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+// Enum for user roles
+enum Role {
+  USER
+  ADMIN
+  HR
+}
+
+// Employee model
+model Employee {
+  id         String      @id @default(cuid())
+  userId     String?     @unique // Link to User if they have an account
+  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name       String
+  position   String
+  department String
+  joinDate   DateTime
+  email      String      @unique
+  phone      String?
+  address    String?
+  salary     Decimal     @default(0)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  salaries   Salary[]
+  tasks      Task[]
+}
+
+// Salary model for tracking monthly salaries, bonuses, and deductions
+model Salary {
+  id         String   @id @default(cuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  month      DateTime // Just store year and month
+  baseSalary Decimal
+  bonus      Decimal  @default(0)
+  deduction  Decimal  @default(0)
+  note       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([employeeId, month]) // Employee can have only one salary record per month
+}
+
+// Project model
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  status      ProjectStatus @default(ACTIVE)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tasks       Task[]
+}
+
+// Enum for project status
+enum ProjectStatus {
+  ACTIVE
+  COMPLETED
+  ON_HOLD
+  CANCELLED
+}
+
+// Task model
+model Task {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  projectId   String
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  status      TaskStatus @default(TODO)
+  priority    Priority   @default(MEDIUM)
+  assigneeId  String?
+  assignee    Employee?  @relation(fields: [assigneeId], references: [id], onDelete: SetNull)
+  dueDate     DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+// Enum for task status
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  DONE
+}
+
+// Enum for task priority
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+// AI Chat model for storing conversation history
+model AIChat {
+  id        String     @id @default(cuid())
+  userId    String     // User who initiated the chat
+  messages  AIMessage[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+// AI Message model for storing individual messages
+model AIMessage {
+  id       String   @id @default(cuid())
+  chatId   String
+  chat     AIChat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  role     String   // 'user' or 'assistant'
+  content  String
+  createdAt DateTime @default(now())
 }

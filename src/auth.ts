@@ -3,6 +3,16 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { compare } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id?: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    }
+  }
+}
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -20,7 +30,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
         const user = await prisma.user.findUnique({
           where: {
-            email: credentials.email,
+            email: credentials.email as string,
           },
         });
 
@@ -28,7 +38,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           return null;
         }
 
-        const isPasswordValid = await compare(credentials.password, user.password);
+        const isPasswordValid = await compare(credentials.password as string, user.password);
 
         if (!isPasswordValid) {
           return null;
