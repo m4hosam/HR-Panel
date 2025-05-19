@@ -1,8 +1,9 @@
-import { auth } from "@/auth";
+import { getCurrentSession } from "@/auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function DashboardPage() {
-  const session = await auth();
+  const session = await getCurrentSession();
+  console.log("Session in dashboard:", session);
 
   return (
     <div className="container p-6">

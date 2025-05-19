@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
-import { auth } from '@/auth';
+import { getCurrentSession } from '@/auth';
 import { hasPermission, ROLES } from '@/lib/constants/roles';
 
 import { getEmployeeById } from '@/lib/actions/employee-actions';
@@ -22,7 +22,7 @@ export default async function EditEmployeePage({
   params,
 }: EditEmployeePageProps) {
   // Get the current session
-  const session = await auth();
+  const session = await getCurrentSession();
   
   if (!session?.user) {
     redirect('/login');

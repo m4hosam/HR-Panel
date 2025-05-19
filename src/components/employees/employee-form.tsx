@@ -290,8 +290,6 @@ export function EmployeeForm({
                   <FormControl>
                     <Input
                       type="number"
-                      min="0"
-                      step="100"
                       placeholder="e.g. 50000"
                       {...field}
                       disabled={isSubmitting}

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { getCurrentSession } from "@/auth";
 import { ROLES } from "@/lib/constants/roles";
 
 /**
@@ -13,7 +13,7 @@ export async function roleMiddleware(
   request: NextRequest,
   allowedRoles: string[] = [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE],
 ) {
-  const session = await auth();
+  const session = await getCurrentSession();
 
   // No session - redirect to login
   if (!session || !session.user) {

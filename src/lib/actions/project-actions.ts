@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from "next/cache";
-import { auth } from "@/auth";
+import { getCurrentSession } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { hasPermission } from "@/lib/constants/roles";
 import { redirect } from "next/navigation";
@@ -25,7 +25,7 @@ export async function getProjects({
   sortDirection?: "asc" | "desc";
 }) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       throw new Error("You must be signed in to view projects");
@@ -113,7 +113,7 @@ export async function getProjects({
  */
 export async function getProjectById(id: string) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       throw new Error("You must be signed in to view project details");
@@ -176,7 +176,7 @@ export async function getProjectById(id: string) {
  */
 export async function createProject(formData: FormData) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       redirect("/login");
@@ -225,7 +225,7 @@ export async function createProject(formData: FormData) {
  */
 export async function updateProject(formData: FormData) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       redirect("/login");
@@ -286,7 +286,7 @@ export async function updateProject(formData: FormData) {
  */
 export async function deleteProject(id: string) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       redirect("/login");

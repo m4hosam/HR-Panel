@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { auth } from '@/auth';
+import { getCurrentSession } from '@/auth';
 import { hasPermission } from '@/lib/constants/roles';
 import { getProjects } from '@/lib/actions/project-actions';
 import { ProjectList } from '@/components/projects/project-list';
@@ -23,7 +23,7 @@ export default async function ProjectsPage({
   searchParams,
 }: ProjectsPageProps) {
   // Get the current session
-  const session = await auth();
+  const session = await getCurrentSession();
   
   if (!session?.user) {
     return (

@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from "next/cache";
-import { auth } from "@/auth";
+import { getCurrentSession } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { hasPermission, ROLES } from "@/lib/constants/roles";
 import { redirect } from "next/navigation";
@@ -19,7 +19,7 @@ export async function getEmployeeSalaries({
   limit?: number;
 }) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       throw new Error("You must be signed in to view salary information");
@@ -90,7 +90,7 @@ export async function getEmployeeSalaries({
  */
 export async function saveSalaryRecord(formData: FormData) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       redirect("/login");
@@ -183,7 +183,7 @@ export async function saveSalaryRecord(formData: FormData) {
  */
 export async function deleteSalaryRecord(id: string) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       redirect("/login");

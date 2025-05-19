@@ -281,7 +281,6 @@ export function SalaryTable({
                           <Input
                             type="number"
                             min="0"
-                            step="100"
                             placeholder="e.g. 5000"
                             {...field}
                             disabled={isSubmitting}
@@ -302,7 +301,6 @@ export function SalaryTable({
                           <Input
                             type="number"
                             min="0"
-                            step="100"
                             placeholder="e.g. 1000"
                             {...field}
                             disabled={isSubmitting}
@@ -323,7 +321,6 @@ export function SalaryTable({
                           <Input
                             type="number"
                             min="0"
-                            step="100"
                             placeholder="e.g. 500"
                             {...field}
                             disabled={isSubmitting}

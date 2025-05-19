@@ -142,7 +142,7 @@ export function ProjectList({ initialProjects, pagination, canCreate }: ProjectL
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Statuses</SelectItem>
+                <SelectItem value=".">All Statuses</SelectItem>
                 <SelectItem value="PLANNING">Planning</SelectItem>
                 <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
                 <SelectItem value="ON_HOLD">On Hold</SelectItem>

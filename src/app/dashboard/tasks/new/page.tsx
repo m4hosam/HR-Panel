@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { auth } from "@/auth";
+import { getCurrentSession } from "@/auth";
 import { hasPermission } from "@/lib/constants/roles";
 import { prisma } from "@/lib/prisma";
 import { TaskForm } from "@/components/tasks/task-form";
@@ -18,7 +18,7 @@ export default async function NewTaskPage({
   };
 }) {
   // Get user session
-  const session = await auth();
+  const session = await getCurrentSession();
 
   if (!session?.user) {
     redirect("/login");
@@ -46,7 +46,6 @@ export default async function NewTaskPage({
   return (
     <div className="container max-w-4xl py-6 space-y-6">
       <h1 className="text-3xl font-bold">Create New Task</h1>
-      
       <TaskForm 
         projects={projects} 
         defaultProjectId={projectId || ""} 

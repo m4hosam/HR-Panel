@@ -159,7 +159,7 @@ export function TaskForm({ task, projects, defaultProjectId, userRole }: TaskFor
       const result = data.id 
         ? await updateTask(formData)
         : await createTask(formData);
-      
+      console.log("Task created/updated successfully:", result);
       if (result.error) {
         setError(result.error);
         setIsSubmitting(false);
@@ -167,8 +167,8 @@ export function TaskForm({ task, projects, defaultProjectId, userRole }: TaskFor
       }
       
       // Redirect to the task detail page or project detail page
-      if (result) {
-        router.push(`/dashboard/tasks/${result}`);
+      if (result.taskId) {
+        router.push(`/dashboard/tasks/${result.taskId}`);
       } else if (data.projectId) {
         router.push(`/dashboard/projects/${data.projectId}`);
       } else {

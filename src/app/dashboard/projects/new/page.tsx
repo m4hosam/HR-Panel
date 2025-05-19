@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { auth } from '@/auth';
+import { getCurrentSession } from '@/auth';
 import { hasPermission } from '@/lib/constants/roles';
 import { redirect } from 'next/navigation';
 import { ProjectForm } from '@/components/projects/project-form';
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default async function CreateProjectPage() {
   // Get the current session
-  const session = await auth();
+  const session = await getCurrentSession();
   
   if (!session?.user) {
     redirect("/login");
@@ -19,6 +19,7 @@ export default async function CreateProjectPage() {
   
   // Check if user has permission to create projects
   const canCreateProject = hasPermission(session.user.role, 'projects', 'create');
+  console.log("canCreateProject", canCreateProject);
   
   if (!canCreateProject) {
     return (

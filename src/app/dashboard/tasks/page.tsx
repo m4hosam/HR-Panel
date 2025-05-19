@@ -1,11 +1,12 @@
 import { Metadata } from "next";
-import { auth } from "@/auth";
+import { getCurrentSession } from "@/auth";
 import { redirect } from "next/navigation";
 import { TaskList } from "@/components/tasks/task-list";
 import { getTasks } from "@/lib/actions/task-actions";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { KanbanBoard } from "@/components/tasks/kanban-board";
+import { hasPermission } from "@/lib/constants/roles";
 
 export const metadata: Metadata = {
   title: "Tasks | Blurr HR Management",
@@ -27,7 +28,7 @@ export default async function TasksPage({
   };
 }) {
   // Get current user session
-  const session = await auth();
+  const session = await getCurrentSession();
   
   if (!session?.user) {
     redirect("/login");
@@ -54,13 +55,19 @@ export default async function TasksPage({
     sortBy,
     sortDirection: sortDirection as "asc" | "desc",
   });
+  // Check if user has permission to create tasks
+  const canCreateTask = hasPermission(session.user.role, "tasks", "create");
 
   return (
     <div className="container space-y-6 py-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Tasks</h1>
+        {canCreateTask && (
+          <Button asChild>
+            <a href="/dashboard/tasks/new">Add New Task</a>
+          </Button>
+        )}
       </div>
-      
       <Tabs defaultValue={view} className="w-full">
         <div className="flex justify-between items-center mb-4">
           <TabsList>

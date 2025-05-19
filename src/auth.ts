@@ -1,11 +1,23 @@
-import NextAuth from "next-auth";
+import NextAuth, { getServerSession, NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { compare } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { Role } from "./lib/constants/roles";
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id?: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      role: Role;
+    }
+  }
+}
 
-export const { auth, handlers, signIn, signOut } = NextAuth({
+
+export const authOptions: NextAuthOptions ={
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
@@ -66,4 +78,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   session: {
     strategy: "jwt",
   },
-}); 
+}; 
+
+
+export async function getCurrentSession() {
+  const session = await getServerSession(authOptions);
+
+  return session;
+}

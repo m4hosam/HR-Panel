@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { auth } from '@/auth';
+import { getCurrentSession } from '@/auth';
 import { hasPermission } from '@/lib/constants/roles';
 import { notFound, redirect } from 'next/navigation';
 import { ProjectForm } from '@/components/projects/project-form';
@@ -20,7 +20,7 @@ export default async function EditProjectPage({
   params,
 }: EditProjectPageProps) {
   // Get the current session
-  const session = await auth();
+  const session = await getCurrentSession();
   
   if (!session?.user) {
     redirect("/login");

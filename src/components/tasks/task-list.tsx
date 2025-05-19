@@ -282,7 +282,7 @@ export function TaskList({ initialTasks, totalTasks, currentPage, totalPages, us
               <SelectValue placeholder="Filter by Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Statuses</SelectItem>
+              <SelectItem value=".">All Statuses</SelectItem>
               <SelectItem value="TODO">To Do</SelectItem>
               <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
               <SelectItem value="REVIEW">Review</SelectItem>
@@ -297,7 +297,7 @@ export function TaskList({ initialTasks, totalTasks, currentPage, totalPages, us
               <SelectValue placeholder="Filter by Priority" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Priorities</SelectItem>
+              <SelectItem value=".">All Priorities</SelectItem>
               <SelectItem value="LOW">Low</SelectItem>
               <SelectItem value="MEDIUM">Medium</SelectItem>
               <SelectItem value="HIGH">High</SelectItem>

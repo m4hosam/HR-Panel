@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { auth } from '@/auth';
+import { getCurrentSession } from '@/auth';
 import { hasPermission } from '@/lib/constants/roles';
 import { prisma } from '@/lib/prisma';
 import { filterAvailableUsers } from '@/lib/utils';
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default async function AddEmployeePage() {
   // Get the current session
-  const session = await auth();
+  const session = await getCurrentSession();
   
   if (!session?.user) {
     redirect('/login');

@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from "next/cache";
-import { auth } from "@/auth";
+import { getCurrentSession } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { hasPermission, ROLES } from "@/lib/constants/roles";
 import { redirect } from "next/navigation";
@@ -23,7 +23,7 @@ export async function getEmployees({
   sortDirection?: "asc" | "desc";
 }) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       throw new Error("You must be signed in to view employees");
@@ -46,14 +46,15 @@ export async function getEmployees({
           ],
         }
       : {};
-    
+    const employeesAll = await prisma.employee.findMany({});
+    console.log("employeesAll", employeesAll);
     const employees = await prisma.employee.findMany({
       where,
       skip,
       take: limit,
-      orderBy: {
-        [sortBy === "name" ? "user.name" : sortBy]: sortDirection,
-      },
+      // orderBy: {
+      //   [sortBy === "name" ? "user.name" : sortBy]: sortDirection,
+      // },
       include: {
         user: {
           select: {
@@ -88,7 +89,7 @@ export async function getEmployees({
  */
 export async function getEmployeeById(id: string) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       throw new Error("You must be signed in to view employee details");
@@ -144,7 +145,7 @@ export async function getEmployeeById(id: string) {
  */
 export async function createEmployee(formData: FormData) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       redirect("/login");
@@ -223,7 +224,7 @@ export async function createEmployee(formData: FormData) {
  */
 export async function updateEmployee(formData: FormData) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       redirect("/login");
@@ -283,7 +284,7 @@ export async function updateEmployee(formData: FormData) {
  */
 export async function deleteEmployee(id: string) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       redirect("/login");

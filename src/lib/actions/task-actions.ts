@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from "next/cache";
-import { auth } from "@/auth";
+import { getCurrentSession } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { hasPermission } from "@/lib/constants/roles";
 import { redirect } from "next/navigation";
@@ -31,7 +31,7 @@ export async function getTasks({
   sortDirection?: "asc" | "desc";
 }) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       throw new Error("You must be signed in to view tasks");
@@ -109,7 +109,7 @@ export async function getTasks({
  */
 export async function getTaskById(id: string) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       throw new Error("You must be signed in to view task details");
@@ -153,9 +153,9 @@ export async function getTaskById(id: string) {
 /**
  * Create a new task
  */
-export async function createTask(formData: FormData) {
+export async function createTask(formData: FormData) : Promise<{ success: boolean; taskId?: string; error?: string }> {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       redirect("/login");
@@ -198,22 +198,22 @@ export async function createTask(formData: FormData) {
         assignedToId: assignedToId || undefined,
       },
     });
-    
+    console.log("Task created:", task);
     revalidatePath(`/dashboard/projects/${projectId}`);
     revalidatePath("/dashboard/tasks");
     return { success: true, taskId: task.id };
   } catch (error) {
     console.error("Error creating task:", error);
-    return { error: error instanceof Error ? error.message : "Failed to create task" };
+    return { success: false, error: error instanceof Error ? error.message : "Failed to create task" };
   }
 }
 
 /**
  * Update a task
  */
-export async function updateTask(formData: FormData) {
+export async function updateTask(formData: FormData) : Promise<{ success: boolean; error?: string ; taskId?: string }> {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       redirect("/login");
@@ -290,10 +290,10 @@ export async function updateTask(formData: FormData) {
     revalidatePath(`/dashboard/tasks/${id}`);
     revalidatePath(`/dashboard/projects/${projectId}`);
     revalidatePath("/dashboard/tasks");
-    return { success: true };
+    return { success: true, taskId: id };
   } catch (error) {
     console.error("Error updating task:", error);
-    return { error: error instanceof Error ? error.message : "Failed to update task" };
+    return { success: false,error: error instanceof Error ? error.message : "Failed to update task" };
   }
 }
 
@@ -302,7 +302,7 @@ export async function updateTask(formData: FormData) {
  */
 export async function deleteTask(id: string) {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       redirect("/login");
@@ -341,7 +341,7 @@ export async function deleteTask(id: string) {
  */
 export async function getEmployeesForAssignment() {
   try {
-    const session = await auth();
+    const session = await getCurrentSession();
     
     if (!session?.user) {
       throw new Error("You must be signed in to view employees");

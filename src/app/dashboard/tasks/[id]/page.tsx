@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@/auth";
+import { getCurrentSession } from "@/auth";
 import { getTaskById } from "@/lib/actions/task-actions";
 import { TaskDetail } from "@/components/tasks/task-detail";
 
@@ -30,7 +30,7 @@ export default async function TaskDetailPage({
   params: { id: string };
 }) {
   // Get user session
-  const session = await auth();
+  const session = await getCurrentSession();
 
   if (!session?.user) {
     redirect("/login");

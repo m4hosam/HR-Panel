@@ -8,17 +8,17 @@ export default withAuth(
     const token = req.nextauth?.token;
     const path = req.nextUrl.pathname;
 
-    if (path.startsWith("/dashboard/admin") && token?.role !== ROLES.ADMIN) {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
-    }
+    // if (path.startsWith("/dashboard/admin") && token?.role !== ROLES.ADMIN) {
+    //   return NextResponse.redirect(new URL("/dashboard", req.url));
+    // }
 
-    if (
-      path.startsWith("/dashboard/projects/new") &&
-      token?.role !== ROLES.ADMIN &&
-      token?.role !== ROLES.MANAGER
-    ) {
-      return NextResponse.redirect(new URL("/dashboard/projects", req.url));
-    }
+    // if (
+    //   path.startsWith("/dashboard/projects/new") &&
+    //   token?.role !== ROLES.ADMIN &&
+    //   token?.role !== ROLES.MANAGER
+    // ) {
+    //   return NextResponse.redirect(new URL("/dashboard/projects", req.url));
+    // }
 
     return NextResponse.next();
   },

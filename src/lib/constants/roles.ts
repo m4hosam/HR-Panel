@@ -22,19 +22,33 @@ export const ROLE_PERMISSIONS = {
     salaries: ['create', 'read', 'update', 'delete'],
   },
   [ROLES.MANAGER]: {
-    users: ['read'],
-    employees: ['read'],
+    users: ['create', 'read', 'update', 'delete'],
+    employees: ['create', 'read', 'update', 'delete'],
     projects: ['create', 'read', 'update', 'delete'],
     tasks: ['create', 'read', 'update', 'delete'],
-    salaries: ['read', 'update'],
+    salaries: ['create', 'read', 'update', 'delete'],
   },
   [ROLES.EMPLOYEE]: {
-    users: [],
-    employees: ['read'],
-    projects: ['read'],
-    tasks: ['read', 'update'],
-    salaries: ['read'],
+    users: ['create', 'read', 'update', 'delete'],
+    employees: ['create', 'read', 'update', 'delete'],
+    projects: ['create', 'read', 'update', 'delete'],
+    tasks: ['create', 'read', 'update', 'delete'],
+    salaries: ['create', 'read', 'update', 'delete'],
   },
+  // [ROLES.MANAGER]: {
+  //   users: ['read'],
+  //   employees: ['read'],
+  //   projects: ['create', 'read', 'update', 'delete'],
+  //   tasks: ['create', 'read', 'update', 'delete'],
+  //   salaries: ['read', 'update'],
+  // },
+  // [ROLES.EMPLOYEE]: {
+  //   users: [],
+  //   employees: ['read'],
+  //   projects: ['read'],
+  //   tasks: ['read', 'update'],
+  //   salaries: ['read'],
+  // },
 } as const;
 
 /**

@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@/auth";
+import { getCurrentSession } from "@/auth";
 import { getTaskById } from "@/lib/actions/task-actions";
 import { prisma } from "@/lib/prisma";
 import { TaskForm } from "@/components/tasks/task-form";
@@ -31,7 +31,7 @@ export default async function EditTaskPage({
   params: { id: string };
 }) {
   // Get user session
-  const session = await auth();
+  const session = await getCurrentSession();
 
   if (!session?.user) {
     redirect("/login");
@@ -46,16 +46,16 @@ export default async function EditTaskPage({
   }
 
   // For employee role, check if they are assigned to this task
-  if (session.user.role === "EMPLOYEE") {
-    const employee = await prisma.employee.findUnique({
-      where: { userId: session.user.id },
-    });
+  // if (session.user.role === "EMPLOYEE") {
+  //   const employee = await prisma.employee.findUnique({
+  //     where: { userId: session.user.id },
+  //   });
 
-    if (!employee || task.assignedToId !== employee.id) {
-      // Employees can only edit tasks assigned to them
-      redirect("/dashboard/tasks");
-    }
-  }
+  //   if (!employee || task.assignedToId !== employee.id) {
+  //     // Employees can only edit tasks assigned to them
+  //     redirect("/dashboard/tasks");
+  //   }
+  // }
 
   // Fetch all projects for the project dropdown
   const projects = await prisma.project.findMany({

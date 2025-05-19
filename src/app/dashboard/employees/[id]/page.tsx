@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { auth } from '@/auth';
+import { getCurrentSession } from '@/auth';
 import { hasPermission, ROLES } from '@/lib/constants/roles';
 
 import { getEmployeeById } from '@/lib/actions/employee-actions';
@@ -28,7 +28,7 @@ export default async function EmployeeDetailsPage({
   searchParams,
 }: EmployeeDetailsPageProps) {
   // Get the current session
-  const session = await auth();
+  const session = await getCurrentSession();
   
   if (!session?.user) {
     return (
