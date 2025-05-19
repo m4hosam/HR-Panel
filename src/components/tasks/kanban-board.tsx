@@ -43,10 +43,10 @@ interface KanbanProps {
 
 // Map task priority to color
 const priorityConfig = {
-  LOW: { color: "bg-gray-100 text-gray-800" },
-  MEDIUM: { color: "bg-blue-100 text-blue-800" },
-  HIGH: { color: "bg-amber-100 text-amber-800" },
-  CRITICAL: { color: "bg-red-100 text-red-800" },
+  'LOW': { color: "bg-gray-100 text-gray-800" },
+  'MEDIUM': { color: "bg-blue-100 text-blue-800" },
+  'HIGH': { color: "bg-amber-100 text-amber-800" },
+  'CRITICAL': { color: "bg-red-100 text-red-800" },
 };
 
 // Define columns with their ids, titles and icons
@@ -243,7 +243,7 @@ export function KanbanBoard({ tasks, userRole, projectId, refreshTasks }: Kanban
                                   )}
                                   
                                   <div className="flex items-center justify-between">
-                                    <Badge variant="outline" className={cn(priorityConfig[task.priority].color)}>
+                                    <Badge variant="outline" className={cn(priorityConfig['LOW'].color)}>
                                       {task.priority}
                                     </Badge>
                                     

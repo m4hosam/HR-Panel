@@ -389,9 +389,9 @@ export function TaskList({ initialTasks, totalTasks, currentPage, totalPages, us
                       <div className="flex">
                         <Badge 
                           variant="outline" 
-                          className={cn("flex items-center", statusConfig[task.status].color)}
+                          className={cn("flex items-center", statusConfig['TODO'].color)}
                         >
-                          {statusConfig[task.status].icon}
+                          {statusConfig['TODO'].icon}
                           {task.status.replace('_', ' ')}
                         </Badge>
                       </div>
@@ -399,7 +399,7 @@ export function TaskList({ initialTasks, totalTasks, currentPage, totalPages, us
                     <TableCell>
                       <Badge 
                         variant="outline" 
-                        className={cn(priorityConfig[task.priority].color)}
+                        className={cn(priorityConfig['LOW'].color)}
                       >
                         {task.priority}
                       </Badge>

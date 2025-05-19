@@ -28,11 +28,7 @@ const registerSchema = z.object({
   password: z
     .string()
     .min(1, "Password is required")
-    .min(6, "Password must be at least 6 characters")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
-    ),
+    
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;

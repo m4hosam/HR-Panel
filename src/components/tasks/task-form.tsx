@@ -167,8 +167,8 @@ export function TaskForm({ task, projects, defaultProjectId, userRole }: TaskFor
       }
       
       // Redirect to the task detail page or project detail page
-      if (result.taskId) {
-        router.push(`/dashboard/tasks/${result.taskId}`);
+      if (result) {
+        router.push(`/dashboard/tasks/${result}`);
       } else if (data.projectId) {
         router.push(`/dashboard/projects/${data.projectId}`);
       } else {
@@ -216,7 +216,7 @@ export function TaskForm({ task, projects, defaultProjectId, userRole }: TaskFor
                     <Input 
                       placeholder="Enter task title" 
                       {...field} 
-                      disabled={isEmployee && task}
+                      
                     />
                   </FormControl>
                   <FormMessage />
@@ -237,7 +237,7 @@ export function TaskForm({ task, projects, defaultProjectId, userRole }: TaskFor
                       className="min-h-[100px]"
                       {...field}
                       value={field.value || ""}
-                      disabled={isEmployee && task}
+                      // disabled={isEmployee && task}
                     />
                   </FormControl>
                   <FormMessage />
@@ -255,7 +255,7 @@ export function TaskForm({ task, projects, defaultProjectId, userRole }: TaskFor
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    disabled={isEmployee && task}
+                    // disabled={isEmployee && task}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -286,7 +286,7 @@ export function TaskForm({ task, projects, defaultProjectId, userRole }: TaskFor
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
-                      disabled={isEmployee && task}
+                      // disabled={isEmployee && task}
                     >
                       <FormControl>
                         <SelectTrigger>

@@ -59,7 +59,6 @@ export async function getTasks({
     };
     
     const tasks = await prisma.task.findMany({
-      where,
       skip,
       take: limit,
       orderBy: {
@@ -88,7 +87,7 @@ export async function getTasks({
       },
     });
     
-    const totalTasks = await prisma.task.count({ where });
+    const totalTasks = await prisma.task.count();
     
     return {
       tasks,

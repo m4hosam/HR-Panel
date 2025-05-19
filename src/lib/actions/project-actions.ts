@@ -50,7 +50,6 @@ export async function getProjects({
     };
     
     const projects = await prisma.project.findMany({
-      where,
       skip,
       take: limit,
       orderBy: {
@@ -92,7 +91,7 @@ export async function getProjects({
       };
     });
     
-    const totalProjects = await prisma.project.count({ where });
+    const totalProjects = await prisma.project.count();
     
     return {
       projects: projectsWithProgress,
