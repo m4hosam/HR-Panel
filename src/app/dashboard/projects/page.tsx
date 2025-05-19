@@ -1,27 +1,27 @@
 import { Metadata } from 'next';
 import { auth } from '@/auth';
 import { hasPermission } from '@/lib/constants/roles';
-
-import { getEmployees } from '@/lib/actions/employee-actions';
-import { EmployeeList } from '@/components/employees/employee-list';
+import { getProjects } from '@/lib/actions/project-actions';
+import { ProjectList } from '@/components/projects/project-list';
 
 export const metadata: Metadata = {
-  title: 'Employees | HR Management',
-  description: 'Manage your company employees',
+  title: 'Projects | HR Management',
+  description: 'Manage your company projects',
 };
 
-interface EmployeesPageProps {
+interface ProjectsPageProps {
   searchParams: {
     search?: string;
     page?: string;
+    status?: string;
     sortBy?: string;
     sortDirection?: 'asc' | 'desc';
   };
 }
 
-export default async function EmployeesPage({
+export default async function ProjectsPage({
   searchParams,
-}: EmployeesPageProps) {
+}: ProjectsPageProps) {
   // Get the current session
   const session = await auth();
   
@@ -36,16 +36,16 @@ export default async function EmployeesPage({
     );
   }
   
-  // Check if user has permission to view employees
-  const canViewEmployees = hasPermission(session.user.role, 'employees', 'read');
-  const canCreateEmployee = hasPermission(session.user.role, 'employees', 'create');
+  // Check if user has permission to view projects
+  const canViewProjects = hasPermission(session.user.role, 'projects', 'read');
+  const canCreateProject = hasPermission(session.user.role, 'projects', 'create');
   
-  if (!canViewEmployees) {
+  if (!canViewProjects) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh]">
         <h1 className="text-2xl font-bold">Access Denied</h1>
         <p className="text-muted-foreground">
-          You do not have permission to view employees.
+          You do not have permission to view projects.
         </p>
       </div>
     );
@@ -54,13 +54,15 @@ export default async function EmployeesPage({
   // Get search and pagination parameters
   const search = searchParams.search || '';
   const page = parseInt(searchParams.page || '1', 10);
+  const status = searchParams.status || '';
   const sortBy = searchParams.sortBy || 'name';
   const sortDirection = searchParams.sortDirection || 'asc';
   
-  // Get employees
-  const { employees = [], pagination = { total: 0, pages: 1, page: 1, limit: 10 }, error } = await getEmployees({
+  // Get projects
+  const { projects = [], pagination = { total: 0, pages: 1, page: 1, limit: 10 }, error } = await getProjects({
     page,
     search,
+    status,
     sortBy,
     sortDirection: sortDirection as 'asc' | 'desc',
   });
@@ -77,14 +79,14 @@ export default async function EmployeesPage({
   return (
     <div className="container p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Employees</h1>
+        <h1 className="text-3xl font-bold">Projects</h1>
       </div>
       
-      <EmployeeList
-        initialEmployees={employees}
+      <ProjectList
+        initialProjects={projects}
         pagination={pagination}
-        canCreate={canCreateEmployee}
+        canCreate={canCreateProject}
       />
     </div>
   );
-} 
+}
