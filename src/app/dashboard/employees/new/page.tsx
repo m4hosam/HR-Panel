@@ -68,7 +68,7 @@ export default async function AddEmployeePage() {
   ];
   
   return (
-    <div className="container p-6">
+    <div className="container max-w-4xl p-6 space-y-6">
       <div className="mb-6">
         <h1 className="text-3xl font-bold">Add Employee</h1>
         <p className="text-muted-foreground">

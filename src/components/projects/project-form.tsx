@@ -118,8 +118,8 @@ export function ProjectForm({ project }: ProjectFormProps) {
       }
       
       // Redirect to the project detail page or projects list
-      if (result) {
-        router.push(`/dashboard/projects/${result}`);
+      if (result.projectId) {
+        router.push(`/dashboard/projects/${result.projectId}`);
       } else {
         router.push("/dashboard/projects");
       }

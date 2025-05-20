@@ -174,7 +174,7 @@ export async function getProjectById(id: string) {
 /**
  * Create a new project
  */
-export async function createProject(formData: FormData) {
+export async function createProject(formData: FormData) : Promise<{ success: boolean; projectId?: string; error?: string }> {
   try {
     const session = await getCurrentSession();
     
@@ -216,14 +216,14 @@ export async function createProject(formData: FormData) {
     return { success: true, projectId: project.id };
   } catch (error) {
     console.error("Error creating project:", error);
-    return { error: error instanceof Error ? error.message : "Failed to create project" };
+    return { success: false ,error: error instanceof Error ? error.message : "Failed to create project" };
   }
 }
 
 /**
  * Update a project
  */
-export async function updateProject(formData: FormData) {
+export async function updateProject(formData: FormData) : Promise<{ success: boolean; projectId?: string; error?: string }>{
   try {
     const session = await getCurrentSession();
     
@@ -274,10 +274,10 @@ export async function updateProject(formData: FormData) {
     
     revalidatePath(`/dashboard/projects/${id}`);
     revalidatePath("/dashboard/projects");
-    return { success: true };
+    return { success: true, projectId: id };
   } catch (error) {
     console.error("Error updating project:", error);
-    return { error: error instanceof Error ? error.message : "Failed to update project" };
+    return { success: false, error: error instanceof Error ? error.message : "Failed to update project" };
   }
 }
 

@@ -387,7 +387,7 @@ export function TaskForm({ task, projects, defaultProjectId, userRole }: TaskFor
             )}
           </CardContent>
           
-          <CardFooter className="flex justify-between">
+          <CardFooter className="flex justify-between mt-9">
             <Button
               type="button"
               variant="outline"
