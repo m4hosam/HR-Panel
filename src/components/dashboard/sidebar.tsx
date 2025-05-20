@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users, Settings, LogOut, Folders } from "lucide-react";
+import { LayoutDashboard, Users, Settings, LogOut, Folders, CheckSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -14,7 +14,7 @@ interface SidebarNavItemProps {
   title: string;
 }
 
-function SidebarNavItem({ href, icon, title }: SidebarNavItemProps) {
+export function SidebarNavItem({ href, icon, title }: SidebarNavItemProps) {
   const pathname = usePathname();
   const isActive = pathname === href;
 
@@ -54,6 +54,12 @@ export function DashboardSidebar() {
               href="/dashboard/projects"
               icon={<Folders className="h-4 w-4" />}
               title="Projects"
+            />
+
+            <SidebarNavItem
+              href="/dashboard/tasks"
+              icon={<CheckSquare className="h-4 w-4" />}
+              title="Tasks"
             />
 
             <div className="mt-4 text-xs font-medium uppercase text-muted-foreground">Settings</div>
